@@ -4,11 +4,9 @@ services:
   whoami:
     image: jwilder/whoami
     environment:
-    - VIRTUAL_HOST=~^p2\..*\.xip\.io
-    networks:
-    - global
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
 
 networks:
-  global:
+  default:
     external:
       name: global

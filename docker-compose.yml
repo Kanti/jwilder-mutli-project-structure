@@ -1,23 +1,40 @@
 version: '3.5'
 
 services:
-  nginx-proxy:
+  global-nginx-proxy:
     image: jwilder/nginx-proxy
+    restart: always
     ports:
-    - "80:80"
-    volumes:
-    - /var/run/docker.sock:/tmp/docker.sock:ro
-    networks:
-      - global
-
-  whoami:
-    image: jwilder/whoami
+      - "80:80"
     environment:
-    - VIRTUAL_HOST=~^whoami\..*\.xip\.io
-    networks:
-    - global
+    - DEFAULT_HOST=portainer.0.0.0.0.xip.io
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  global-db:
+    image: mysql:5.7
+    restart: always
+    volumes:
+    - ./data/global-db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
+  global-mail:
+    image: tophfr/mailcatcher
+    restart: always
+    environment:
+      - VIRTUAL_HOST=~^mail\..*\.xip\.io
+
+  global-portainer:
+    image: portainer/portainer
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/global-portainer:/data
+    environment:
+      - VIRTUAL_HOST=~^portainer\..*\.xip\.io
 
 
 networks:
-  global:
+  default:
     name: global
