@@ -1,0 +1,23 @@
+version: '3.5'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+    - "80:80"
+    volumes:
+    - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - global
+
+  whoami:
+    image: jwilder/whoami
+    environment:
+    - VIRTUAL_HOST=~^whoami\..*\.xip\.io
+    networks:
+    - global
+
+
+networks:
+  global:
+    name: global
